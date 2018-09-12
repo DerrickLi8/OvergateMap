@@ -3,13 +3,16 @@
    <head>
       <title>OvergateMap</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- 引入 Bootstrap -->
+      <!-- Import Bootstrap -->
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
  
       <!--[if lt IE 9]>
          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
       <![endif]-->
+	   
+	<script src="https://cdn-webgl.wrld3d.com/wrldjs/dist/latest/wrld.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css" rel="stylesheet" />   
    </head>
    <body>
     <div class="container">
@@ -89,9 +92,10 @@
 				<h1>
 					Map of Overgate
 				</h1>
-				<p>
-					This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
-				</p>
+				 <div id="map" style="width: 400px; height: 400px;"></div>
+				<script type="text/javascript">
+					var map = L.Wrld.map("map", "b189b9e506608f6893d64f815312ef95");
+				</script>
 				<p>
 					 <a class="btn btn-primary btn-large" href="#">Learn more</a>
 				</p>
