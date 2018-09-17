@@ -18,8 +18,9 @@ var poiApi = new WrldPoiApi("91579bb03b94dbe153485fb8b1033e8d");
 function onIndoorMapEntered(event) {
   currentIndoorMapId = event.indoorMap.getIndoorMapId();
   currentFloor = map.indoors.getFloor().getFloorIndex();
+  console.log(currentFloor);
   poiApi.searchIndoors(currentIndoorMapId, currentFloor, onPOISearchResults,
-    { tags: "General" });
+    { tags: "General", number: 60, floorRange:1 });
 }
 
 function onPOISearchResults(success, results) {
