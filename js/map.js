@@ -1,7 +1,7 @@
 
 var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
-  center: [56.459801, -2.977928],
-  zoom: 15,
+  center: [56.4601, -2.9728],
+  zoom: 16,
   indoorsEnabled: true
 });
 
