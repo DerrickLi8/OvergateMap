@@ -68,6 +68,36 @@ function getWithStoredProcedure($proc, $array){
         echo "error: ".$e->getMessage();
     }
 }
+    
+//function for calculating the people density of the given store
+function getPeopleDensityByID($storeID){		
+	$getStore_array = array('StoreName', 'StoreID','PeopleNumber','Area');	
+	$store = getWithStoredProcedure("call storesSelectByID($storeID);", $getStore_array);		
+	$peopleDensity = $store['PeopleNumber'] / $store['Area'];	
+	echo $peopleDensity;				
+	return $peopleDensity;
+}
+
+//function for calculating the people density of the given floor
+function getPeopleDensityByFloor($floor){
+	$con = openConnection();
+	$query="call storesSelectByFloor($floor);"; 
+	$stmt = $con->prepare($query); 
+	$stmt->execute(); 
+	$result = $stmt->fetchAll(); 	
+	$peopleNumber = 0;
+	$totalArea = 0;
+	
+	foreach( $result as $row ) { 
+		$peopleNumber = $peopleNumber + $row['PeopleNumber'];
+		$totalArea = $totalArea + $row['Area'];
+	}		
+	closeConnection($result, $stmt, $con);
+	$peopleDensity = $peopleNumber / $totalArea;
+	echo $peopleDensity;		
+	return $peopleDensity;
+}
+
 
 $array = array('StoreName', 'StoreID');
 $other_array = array(2, 3, 4);
@@ -75,9 +105,6 @@ foreach($other_array as $o){
     $r = $ret_array = getWithStoredProcedure("call storesSelectByID($o);", $array);
     echo $r['StoreName'];
 }
-
-
-
 
 
 
