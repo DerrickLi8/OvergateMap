@@ -25,6 +25,7 @@ function closeConnection($q, $stmt, $conn){
 
 //functions for handling database through stored procedures
 
+//same as getWithStoredProcedure but it doesn`t have to reutrn data
 function setWithStoredProcedure($proc){  
     try{
         $con = openConnection();
@@ -39,6 +40,12 @@ function setWithStoredProcedure($proc){
         }
 }
 
+
+//function to create call for stored procedure
+
+//pass in call through $proc and pass in array of keys you want to get with $array
+//eg: $proc = "call storesSelectByID($o);" (where $o can be an interger), $array = ("StoreName", "StoreID")
+//returns an array with key-value pairs where keys are the keys passed in with $array
 function getWithStoredProcedure($proc, $array){
     try{
         $con = openConnection();
