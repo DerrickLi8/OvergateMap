@@ -1,0 +1,14 @@
+hr { 
+    border: 0;
+    border-bottom: 3px dashed #ccc; 
+    background: #999; 
+}
+
+.ch3{
+    padding-top:0px !important;
+    margin-top:0px !important;
+} 
+
+.shopContent p{
+    font-size:15px;
+}
