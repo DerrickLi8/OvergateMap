@@ -70,15 +70,18 @@ function getWithStoredProcedure($proc, $array){
 }
     
 //function for calculating the people density of the given store
+//the result would only keep 2 digits after the decimal point and return as a String 
 function getPeopleDensityByID($storeID){		
 	$getStore_array = array('StoreName', 'StoreID','PeopleNumber','Area');	
 	$store = getWithStoredProcedure("call storesSelectByID($storeID);", $getStore_array);		
-	$peopleDensity = $store['PeopleNumber'] / $store['Area'];	
+    $peopleDensity = $store['PeopleNumber'] / $store['Area'];
+    $peopleDensity = number_format((float)$peopleDensity, 2, '.', '');	
 	echo $peopleDensity;				
 	return $peopleDensity;
 }
 
 //function for calculating the people density of the given floor
+//the result would only keep 2 digits after the decimal point and return as a String 
 function getPeopleDensityByFloor($floor){
 	$con = openConnection();
 	$query="call storesSelectByFloor($floor);"; 
@@ -93,7 +96,8 @@ function getPeopleDensityByFloor($floor){
 		$totalArea = $totalArea + $row['Area'];
 	}		
 	closeConnection($result, $stmt, $con);
-	$peopleDensity = $peopleNumber / $totalArea;
+    $peopleDensity = $peopleNumber / $totalArea;
+    $peopleDensity = number_format((float)$peopleDensity, 2, '.', '');
 	echo $peopleDensity;		
 	return $peopleDensity;
 }
