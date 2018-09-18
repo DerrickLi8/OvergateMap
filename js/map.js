@@ -6,31 +6,28 @@ var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
 });
 
 var markers = []
+var curMarkers = []
 var markerTitles = []
 var index = 0;
 var markerController = new WrldMarkerController(map);
 var indoorControl = new WrldIndoorControl("widget-container", map);
 var currentIndoorMapId;
 var currentFloor;
-
 var poiApi = new WrldPoiApi("91579bb03b94dbe153485fb8b1033e8d");
-
 function onIndoorMapEntered(event) {
   currentIndoorMapId = event.indoorMap.getIndoorMapId();
   currentFloor = map.indoors.getFloor().getFloorIndex();
   console.log(currentFloor);
   poiApi.searchIndoors(currentIndoorMapId, currentFloor, onPOISearchResults,
-    { tags: "General", number: 60, floorRange:1 });
+    { tags: "General", number: 100, floorRange: 1 });
 }
 
-function onPOISearchResults(success, results) {
-  console.log(results);
+function onPOISearchResults(success, results) { 
   if (success) {
     var i;
     for(i=0; i < results.length; i++){
       (function () {
-        console.log(i + "-" + results.length);
-        var tempMarker = markerController.addMarker(i, [results[i].lat, results[i].lon], { iconKey: "toilet_men" });
+        var tempMarker = markerController.addMarker(i, [results[i].lat, results[i].lon], { isIndoor: true, iconKey: "toilet_men", floorIndex: results[i].floor_id });
         markers.push(tempMarker);
         var tempTitle = results[i].title
         markerTitles.push(tempTitle);
@@ -87,7 +84,6 @@ function displayMarkerPopUp(markersIndex) {
 
       "      <div class='item active'> " +
       " <h3 class='ch3' style='text-align:center;color:darkgray'>People Density History</h3>" +
-      "        <img src='https://www.advsofteng.com/doc/cdnetdoc/images/colorbar.png' style='width:100%;' alt='...'>" +
       "        <div class='carousel-caption'> " +
       "       </div> " +
       "      </div> " +
