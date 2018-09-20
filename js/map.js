@@ -1,3 +1,5 @@
+var span = document.getElementsByClassName("close")[0];
+var modalContent = document.getElementById("myModal");
 
 var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
     center: [56.460094, -2.972821],
@@ -14,24 +16,36 @@ var allMarkerTitles = [];
 var currentIndoorMapId;
 var currentFloor;
 
-function displayMarkerPopUp(id){
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  closeModal()
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modalContent) {
+    closeModal()
+  }
+}
+
+function closeModal(){
+  markerController.deselectMarker();
+  modalContent.style.display = "none";
+}
+
+function displayMarkerPopUp(id,event){
     "use strict";
     var marker = allMarkers[id];
     var title = allMarkerTitles[id];
-    var popupOptions = {
-        indoorMapId: currentIndoorMapId,
-        indoorMapFloorIndex: currentFloor,
-        autoClose: false,
-        closeOnClick: false,
-        minWidth: "5"
-    };
+    var posX = event.containerPoint.x;
+    var posY = event.containerPoint.y;
+    var projection = map.latLngToLayerPoint(marker._latlng)
+    console.log(projection);
 
-    var popup = L.popup(popupOptions)
-    .setLatLng(marker._latlng)
-    .addTo(map)
-    .setContent("Popup");
-
-    marker.bindPopup(popup)
+    markerController.selectMarker(marker);
+    modal.style.display = "block";
+    modal.style.top = projection.y + "px";
+    modal.style.left = projection.x+ "px";
 }
 
 function onPOISearchResults(success, results) { 
@@ -52,7 +66,7 @@ function onPOISearchResults(success, results) {
 
             var index = i;
             tempMarker.on("click", function (e) {
-                displayMarkerPopUp(index);
+                displayMarkerPopUp(index,e);
             });
         }());
     }
