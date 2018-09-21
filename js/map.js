@@ -1,9 +1,10 @@
 var span = document.getElementsByClassName("close")[0];
 var modal = document.getElementById("myModal");
 
+const indoorMapId = 'EIM-e16a94b1-f64f-41ed-a3c6-8397d9cfe607';
 var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
     center: [56.460094, -2.972821],
-    zoom: 17,
+    zoom: 16,
     indoorsEnabled: true
 });
 
@@ -13,7 +14,6 @@ var poiApi = new WrldPoiApi("91579bb03b94dbe153485fb8b1033e8d");
 
 var allMarkers = [];
 var allMarkerTitles = [];
-var currentIndoorMapId;
 var currentFloor;
 var curSelectedMarker;
 
@@ -31,8 +31,9 @@ span.onclick = function () {
 }
 
 function movePopup(){
-    marker = curSelectedMarker;
-    if(!marker){
+    "use strict";
+    var marker = curSelectedMarker;
+    if (!marker) {
         return;
     }
 
@@ -42,11 +43,13 @@ function movePopup(){
     modal.style.top = projection.y + "px";
     modal.style.left = projection.x + "px";
 }
+
 function displayMarkerPopUp(id, event) {
     "use strict";
     var marker = allMarkers[id];
     var title = allMarkerTitles[id];
     var projection = map.latLngToLayerPoint(marker._latlng);
+
     curSelectedMarker = marker;
     markerController.selectMarker(marker);
     modal.style.display = "block";
@@ -83,17 +86,19 @@ function onPOISearchResults(success, results) {
 function searchForAllMarkers() {
     "use strict";
     var poiSettings = {tags: "General", number: 100, floorRange: 1};
-    poiApi.searchIndoors(currentIndoorMapId, currentFloor, onPOISearchResults,
+    poiApi.searchIndoors(indoorMapId, currentFloor, onPOISearchResults,
             poiSettings);
 }
 
 function onIndoorMapEntered(event) {
     "use strict";
-    currentIndoorMapId = event.indoorMap.getIndoorMapId();
     currentFloor = map.indoors.getFloor().getFloorIndex();
     searchForAllMarkers();
 }
 
+map.on('initialstreamingcomplete', () => {
+    map.indoors.enter(indoorMapId);
+  });
 map.indoors.on("indoormapenter", onIndoorMapEntered);
 map.on("pan", movePopup);
 map.on("zoom", movePopup);
