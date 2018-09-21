@@ -17,7 +17,7 @@ var allMarkerTitles = [];
 var currentFloor;
 var curSelectedMarker;
 
-function closeModal() {
+function closeModalPopup() {
     "use strict";
     markerController.deselectMarker();
     curSelectedMarker = null;
@@ -27,7 +27,7 @@ function closeModal() {
 // When the user clicks on <span> (x), close the modal
 span.onclick = function () {
     "use strict";
-    closeModal();
+    closeModalPopup();
 }
 
 function movePopup(){
@@ -47,9 +47,15 @@ function movePopup(){
 function displayMarkerPopUp(id, event) {
     "use strict";
     var marker = allMarkers[id];
+
+    if (curSelectedMarker === marker) {
+        closeModalPopup();
+        return;
+    }
+
     var title = allMarkerTitles[id];
     var projection = map.latLngToLayerPoint(marker._latlng);
-
+    
     curSelectedMarker = marker;
     markerController.selectMarker(marker);
     modal.style.display = "block";
