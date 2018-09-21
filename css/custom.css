@@ -14,10 +14,10 @@
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
-    margin: 0% auto; /* 15% from the top and centered */
     padding: 0px;
     border: 0px solid #888;
-    width: 20%; /* Could be more or less, depending on screen size */
+    width: 40%; /* Could be more or less, depending on screen size */
+    height:40%;
 }
 
 /* The Close Button */
@@ -34,3 +34,4 @@
     text-decoration: none;
     cursor: pointer;
 }
+
