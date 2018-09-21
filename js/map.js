@@ -1,7 +1,10 @@
+var span = document.getElementsByClassName("close")[0];
+var modal = document.getElementById("myModal");
 
+const indoorMapId = 'EIM-e16a94b1-f64f-41ed-a3c6-8397d9cfe607';
 var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
     center: [56.460094, -2.972821],
-    zoom: 17,
+    zoom: 16,
     indoorsEnabled: true
 });
 
@@ -11,39 +14,67 @@ var poiApi = new WrldPoiApi("91579bb03b94dbe153485fb8b1033e8d");
 
 var allMarkers = [];
 var allMarkerTitles = [];
-var currentIndoorMapId;
 var currentFloor;
+var curSelectedMarker;
 
-function displayMarkerPopUp(id){
+function closeModalPopup() {
     "use strict";
-    var marker = allMarkers[id];
-    var title = allMarkerTitles[id];
-    var popupOptions = {
-        indoorMapId: currentIndoorMapId,
-        indoorMapFloorIndex: currentFloor,
-        autoClose: false,
-        closeOnClick: false,
-        minWidth: "5"
-    };
-
-    var popup = L.popup(popupOptions)
-    .setLatLng(marker._latlng)
-    .addTo(map)
-    .setContent("Popup");
-
-    marker.bindPopup(popup)
+    markerController.deselectMarker();
+    curSelectedMarker = null;
+    modal.style.display = "none";
 }
 
-function onPOISearchResults(success, results) { 
+// When the user clicks on <span> (x), close the modal
+span.onclick = function () {
+    "use strict";
+    closeModalPopup();
+}
+
+function movePopup(){
+    "use strict";
+    var marker = curSelectedMarker;
+    if (!marker) {
+        return;
+    }
+
+    var projection = map.latLngToLayerPoint(marker._latlng);
+    markerController.selectMarker(marker);
+    modal.style.display = "block";
+    modal.style.top = projection.y + "px";
+    modal.style.left = projection.x + "px";
+}
+
+function displayMarkerPopUp(id, event) {
+    "use strict";
+    var marker = allMarkers[id];
+
+    if (curSelectedMarker === marker) {
+        closeModalPopup();
+        return;
+    }
+
+    var title = allMarkerTitles[id];
+    var projection = map.latLngToLayerPoint(marker._latlng);
+    
+    curSelectedMarker = marker;
+    markerController.selectMarker(marker);
+    modal.style.display = "block";
+    modal.style.top = projection.y + "px";
+    modal.style.left = projection.x + "px";
+}
+
+function onPOISearchResults(success, results) {
     "use strict";
     if (!success) {
         return;
     }
     var i;
     for (i = 0; i < results.length; i++) {
-      (function () {
-            var markerOptions = {isIndoor: true, iconKey: "toilet_men",
-                    floorIndex: results[i].floor_id};
+        (function () {
+            var markerOptions = {
+                isIndoor: true, iconKey: "toilet_men",
+                floorIndex: results[i].floor_id
+            };
 
             var tempMarker = markerController.addMarker(i, [results[i].lat,
                     results[i].lon], markerOptions);
@@ -52,24 +83,28 @@ function onPOISearchResults(success, results) {
 
             var index = i;
             tempMarker.on("click", function (e) {
-                displayMarkerPopUp(index);
+                displayMarkerPopUp(index, e);
             });
         }());
     }
 }
 
-function searchForAllMarkers(){
+function searchForAllMarkers() {
     "use strict";
     var poiSettings = {tags: "General", number: 100, floorRange: 1};
-    poiApi.searchIndoors(currentIndoorMapId, currentFloor, onPOISearchResults,
+    poiApi.searchIndoors(indoorMapId, currentFloor, onPOISearchResults,
             poiSettings);
 }
 
 function onIndoorMapEntered(event) {
     "use strict";
-    currentIndoorMapId = event.indoorMap.getIndoorMapId();
     currentFloor = map.indoors.getFloor().getFloorIndex();
     searchForAllMarkers();
 }
 
+map.on('initialstreamingcomplete', () => {
+    map.indoors.enter(indoorMapId);
+  });
 map.indoors.on("indoormapenter", onIndoorMapEntered);
+map.on("pan", movePopup);
+map.on("zoom", movePopup);
