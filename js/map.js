@@ -15,32 +15,39 @@ var allMarkers = [];
 var allMarkerTitles = [];
 var currentIndoorMapId;
 var currentFloor;
+var curSelectedMarker;
 
 function closeModal() {
     "use strict";
     markerController.deselectMarker();
+    curSelectedMarker = null;
     modal.style.display = "none";
 }
 
 // When the user clicks on <span> (x), close the modal
 span.onclick = function () {
     "use strict";
-    closeModal()
+    closeModal();
 }
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function (event) {
-    "use strict";
-    if(event.target == modal) {
-        closeModal()
+function movePopup(){
+    marker = curSelectedMarker;
+    if(!marker){
+        return;
     }
-}
 
+    var projection = map.latLngToLayerPoint(marker._latlng);
+    markerController.selectMarker(marker);
+    modal.style.display = "block";
+    modal.style.top = projection.y + "px";
+    modal.style.left = projection.x + "px";
+}
 function displayMarkerPopUp(id, event) {
     "use strict";
     var marker = allMarkers[id];
     var title = allMarkerTitles[id];
     var projection = map.latLngToLayerPoint(marker._latlng);
+    curSelectedMarker = marker;
     markerController.selectMarker(marker);
     modal.style.display = "block";
     modal.style.top = projection.y + "px";
@@ -75,7 +82,7 @@ function onPOISearchResults(success, results) {
 
 function searchForAllMarkers() {
     "use strict";
-    var poiSettings = { tags: "General", number: 100, floorRange: 1 };
+    var poiSettings = {tags: "General", number: 100, floorRange: 1};
     poiApi.searchIndoors(currentIndoorMapId, currentFloor, onPOISearchResults,
             poiSettings);
 }
@@ -88,3 +95,5 @@ function onIndoorMapEntered(event) {
 }
 
 map.indoors.on("indoormapenter", onIndoorMapEntered);
+map.on("pan", movePopup);
+map.on("zoom", movePopup);

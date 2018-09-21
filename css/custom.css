@@ -5,9 +5,9 @@
     z-index: 200; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: false; /* Enable scroll if needed */
+    overflow: hidden; /* Enable scroll if needed */
+    width:25%;
+    height:20%
 
 }
 
@@ -16,8 +16,8 @@
     background-color: #fefefe;
     padding: 0px;
     border: 0px solid #888;
-    width: 40%; /* Could be more or less, depending on screen size */
-    height:40%;
+    width: 100%; /* Could be more or less, depending on screen size */
+    height: 100%;
 }
 
 /* The Close Button */
@@ -35,3 +35,11 @@
     cursor: pointer;
 }
 
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map {
+    height: 100%;
+    width: 100%;
+}
