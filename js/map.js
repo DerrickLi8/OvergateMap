@@ -1,3 +1,5 @@
+var span = document.getElementsByClassName("close")[0];
+var modal = document.getElementById("myModal");
 
 var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
     center: [56.460094, -2.972821],
@@ -14,36 +16,49 @@ var allMarkerTitles = [];
 var currentIndoorMapId;
 var currentFloor;
 
-function displayMarkerPopUp(id){
+function closeModal() {
+    "use strict";
+    markerController.deselectMarker();
+    modal.style.display = "none";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function () {
+    "use strict";
+    closeModal()
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+    "use strict";
+    if(event.target == modal) {
+        closeModal()
+    }
+}
+
+function displayMarkerPopUp(id, event) {
     "use strict";
     var marker = allMarkers[id];
     var title = allMarkerTitles[id];
-    var popupOptions = {
-        indoorMapId: currentIndoorMapId,
-        indoorMapFloorIndex: currentFloor,
-        autoClose: false,
-        closeOnClick: false,
-        minWidth: "5"
-    };
-
-    var popup = L.popup(popupOptions)
-    .setLatLng(marker._latlng)
-    .addTo(map)
-    .setContent("Popup");
-
-    marker.bindPopup(popup)
+    var projection = map.latLngToLayerPoint(marker._latlng);
+    markerController.selectMarker(marker);
+    modal.style.display = "block";
+    modal.style.top = projection.y + "px";
+    modal.style.left = projection.x + "px";
 }
 
-function onPOISearchResults(success, results) { 
+function onPOISearchResults(success, results) {
     "use strict";
     if (!success) {
         return;
     }
     var i;
     for (i = 0; i < results.length; i++) {
-      (function () {
-            var markerOptions = {isIndoor: true, iconKey: "toilet_men",
-                    floorIndex: results[i].floor_id};
+        (function () {
+            var markerOptions = {
+                isIndoor: true, iconKey: "toilet_men",
+                floorIndex: results[i].floor_id
+            };
 
             var tempMarker = markerController.addMarker(i, [results[i].lat,
                     results[i].lon], markerOptions);
@@ -52,15 +67,15 @@ function onPOISearchResults(success, results) {
 
             var index = i;
             tempMarker.on("click", function (e) {
-                displayMarkerPopUp(index);
+                displayMarkerPopUp(index, e);
             });
         }());
     }
 }
 
-function searchForAllMarkers(){
+function searchForAllMarkers() {
     "use strict";
-    var poiSettings = {tags: "General", number: 100, floorRange: 1};
+    var poiSettings = { tags: "General", number: 100, floorRange: 1 };
     poiApi.searchIndoors(currentIndoorMapId, currentFloor, onPOISearchResults,
             poiSettings);
 }
