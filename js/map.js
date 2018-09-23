@@ -106,5 +106,6 @@ map.on('initialstreamingcomplete', () => {
     map.indoors.enter(indoorMapId);
   });
 map.indoors.on("indoormapenter", onIndoorMapEntered);
+map.indoors.on("indoormapfloorchange", closeModalPopup);
 map.on("pan", movePopup);
 map.on("zoom", movePopup);
