@@ -12,8 +12,7 @@ var indoorControl = new WrldIndoorControl("widget-container", map);
 var markerController = new WrldMarkerController(map);
 var poiApi = new WrldPoiApi("91579bb03b94dbe153485fb8b1033e8d");
 
-var allMarkers = [];
-var allMarkerTitles = [];
+var allShopFloors = [];
 var currentFloor;
 var curSelectedMarker;
 
@@ -24,11 +23,11 @@ function closeModalPopup() {
     modal.style.display = "none";
 }
 
-// When the user clicks on <span> (x), close the modal
+// When the user clicks on x, close the modal
 span.onclick = function () {
     "use strict";
     closeModalPopup();
-}
+};
 
 function movePopup(){
     "use strict";
@@ -46,18 +45,19 @@ function movePopup(){
 
 function displayMarkerPopUp(id, event) {
     "use strict";
-    var marker = allMarkers[id];
+    var curShopFloor = allShopFloors[id];
+    var curMarker = curShopFloor.marker;
 
-    if (curSelectedMarker === marker) {
+    if (curSelectedMarker === curMarker) {
         closeModalPopup();
         return;
     }
 
-    var title = allMarkerTitles[id];
-    var projection = map.latLngToLayerPoint(marker._latlng);
-    
-    curSelectedMarker = marker;
-    markerController.selectMarker(marker);
+    var title = curShopFloor.title;
+    var projection = map.latLngToLayerPoint(curMarker._latlng);
+
+    curSelectedMarker = curMarker;
+    markerController.selectMarker(curMarker);
     modal.style.display = "block";
     modal.style.top = projection.y + "px";
     modal.style.left = projection.x + "px";
@@ -78,13 +78,20 @@ function onPOISearchResults(success, results) {
 
             var tempMarker = markerController.addMarker(i, [results[i].lat,
                     results[i].lon], markerOptions);
-            allMarkers.push(tempMarker);
-            allMarkerTitles.push(results[i].title);
 
             var index = i;
             tempMarker.on("click", function (e) {
                 displayMarkerPopUp(index, e);
             });
+
+            var shopFloor = {
+                title: results[i].title,
+                marker: tempMarker,
+                occupancy: 0,
+                populationDensity: 0
+            };
+
+            allShopFloors.push(shopFloor);
         }());
     }
 }
