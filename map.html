@@ -33,132 +33,99 @@
 		<div id="map" style="height:1080px; margin:auto;">
 			<div id="myModal" class="modal">
 				<div class="modal-content" id="modal-content">
-					<span class="close">&times;</span>
-					<ul class="nav nav-tabs  nav-justified">
-						<li class="active"><a data-toggle="tab" href="#stats">Stats</a></li>
-						<li><a data-toggle="tab" href="#vis">Visualisation</a></li>
-					</ul>
-
-					<!-- Stats -->
-					<div class="tab-content">
-						<div id="stats" class="tab-pane fade in active">
-							<h4 id="modalTitle"></h4>
-							<div class="container" id="modalStatsContainer">
-								
-								<div class="row">
-									<div class="col-md-6">
-										<div class="modal-image-cont">
-											<img id="modalImage" class="img-rounded" src="">
-										</div>
-									</div>
-
-									<div class="col-md-6" id="modalStats">
-										<div class="alert alert-info">
-										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Current Visitors: </p>
-										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Population Density: </p>
-										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Density Rating: </p>
-										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Total Visitors: </p>
-									</div>
-									</div>
-									
-								</div>
-								<hr>
-								<div class="container">
-									<div class="descriptionTitle">
-										<h4>Shop Details</h4>
-									</div>
-								</div>
-							</div>
-							</div>
-
-
-							<!-- Visualisation -->
-							<div id="vis" class="tab-pane fade">
-								<h4>Live Population</h4>
-								<div id="graph"></div>
-								<script>
-									function rand() {
-										return Math.random();
-									}
-
-									var d3 = Plotly.d3;
-									var WIDTH_IN_PERCENT_OF_PARENT = 98,
-										HEIGHT_IN_PERCENT_OF_PARENT = 90;
-
-									var gd3 = d3.select("div[id='graph']")
-										.style({
-											width: WIDTH_IN_PERCENT_OF_PARENT + '%',
-											'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
-											height: HEIGHT_IN_PERCENT_OF_PARENT + '%'
-										});
-
-
-									var time = new Date();
-
-									var graph = gd3.node();
-
-									var data = [{
-										x: [time],
-										y: [rand],
-										fill: 'tozeroy',
-										mode: 'lines',
-										line: { color: '#80CAF6' }
-
-									}]
-
-									var layout = {
-										autosize: true,
-
-										margin: {
-											l: 50,
-											r: 50,
-											b: 100,
-											t: 10,
-											pad: 4
-										},
-
-									};
-
-									Plotly.plot('graph', data, layout, { displayModeBar: false });
-
-
-									var cnt = 0;
-
-									var interval = setInterval(function () {
-
-
-										var time = new Date();
-
-										var update = {
-											x: [[time]],
-											y: [[rand()]]
-										}
-
-										var olderTime = time.setMinutes(time.getMinutes() - 1);
-										var futureTime = time.setMinutes(time.getMinutes() + 1);
-
-										var minuteView = {
-											xaxis: {
-												type: 'date',
-												range: [olderTime, futureTime]
-											}
-										};
-
-										Plotly.relayout('graph', minuteView);
-										Plotly.extendTraces('graph', update, [0]);
-										window.onresize = function () { Plotly.Plots.resize(graph) };
-
-										if (cnt === 100) clearInterval(interval);
-									}, 1000);
-
-								</script>
-							</div>
+						<span class="close">&times;</span>
+					<div class="modalLeftBG">
+						<div class="modalLeftIconContainer">
+							<img class="modalLeftIcon" src="https://cdn-webgl.wrld3d.com/wrld-search/latest/assets/js/icon1_toilet_men.png">
 						</div>
 					</div>
+					<div class="modalRight">
+						<div class="modalTitle" >
+							<h3 class="modalTitleText" id="modalTitle">Title of Shop</h3>
+						</div>
+							
+					<ul class="nav nav-tabs  nav-justified">
+							<li class="active"><a data-toggle="tab" href="#stats">Stats</a></li>
+							<li><a data-toggle="tab" href="#vis">Visualisation</a></li>
+						</ul>
+	
+						<!-- Stats -->
+						<div class="tab-content">
+							<div id="stats" class="tab-pane fade in active">
+								<div class="container" id="modalStatsContainer">
+									
+									<div class="row">
+										
+	
+										
+										</div>
+
+											<div class="col-md-6">
+													<div class="modal-image-cont">
+															<img id="modalImage" class="img-rounded" src="">
+														</div>
+														
+											</div>
+
+											<div class="col-md-6" id="modalStats">
+													<div class="alert alert-info">
+													<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Current Visitors: 10 </p>
+													<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Population Density: 20 </p>
+													<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Density Rating: Average </p>
+													<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Total Visitors: 30 </p>
+												</div>
+										</div>
+										
+									</div>
+									<hr>
+									<div class="container">
+										<div class="descriptionTitle">
+											<h4>Shop Details</h4>
+										</div>
+										<div class="row" id="shopDescRow">
+										<div class="col-md-4 vbRight" id="shopDesc">
+											<h5>Description</h5>
+											<p>This is a shop in the
+											overgate centre. It sells
+											Items and these are for sale
+											</p>
+										</div>
+										<div class="col-md-4 vbRight" id="shopAddress">
+												<h5>Address</h5>
+												<p>101 Overgate centre</p>
+												<p>Dundee</p>
+												<p>City of Dundee</p>
+											</div>
+										<div class="col-md-4" id="shopOpeningTimes">
+												<h5>Opening Times</h5>
+												<p> Monday: 9-5pm
+													Tuesday: 9-5pm
+													Wednesday: 9-5pm
+													Thursday: 9-5pm
+													Friday: 9-5pm
+													Saturday: 9-5pm
+													Sunday: 9-5pm
+												</p>
+											</div>
+									</div>
+								</div>
+								</div>
+	
+	
+								<!-- Visualisation -->
+								<div id="vis" class="tab-pane fade">
+									<h4>Live Population</h4>
+									<div id="graph"></div>
+									<script src="js/graph.js">
+									</script>
+								</div>
+							</div>
 				</div>
 			</div>
+		</div>
+	</div>
 
-			<script src="js/map.js"></script>
+	<script src="js/map.js"></script>
 </body>
 
 </html>
