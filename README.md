@@ -10,17 +10,17 @@
 
 ==DATABASE DETAILS==
 
-Server:
+Server: silva.computing.dundee.ac.uk 
 
-Username:
+Username: 18indteam5
 
 Password:
 
-Database Name:
+Database Name: 18indteam5db
 
 ==INSTALLATION==
 
-Copy all files into a directory and open index.html in a web browser.
+Copy all files into a directory and open index.html in a web browser.  Navigate to Guide webpage from navigation bar to see user guide.
 
 ==UNINSTALLATION==
 
