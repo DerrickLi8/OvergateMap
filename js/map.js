@@ -56,7 +56,8 @@ function displayMarkerPopUp(id, event) {
     }
 
     var title = curShopFloor.title;
-
+    document.getElementById("modalTitle").innerHTML = title;
+    document.getElementById("modalImage").src = curShopFloor.imageURL;
     curSelectedMarker = curMarker;
     markerController.selectMarker(curMarker);
     movePopup();
@@ -82,9 +83,9 @@ function onPOISearchResults(success, results) {
             tempMarker.on("click", function (e) {
                 displayMarkerPopUp(index, e);
             });
-
             var shopFloor = {
                 title: results[i].title,
+                imageURL: results[i].user_data.image_url,
                 marker: tempMarker,
                 occupancy: 0,
                 populationDensity: 0

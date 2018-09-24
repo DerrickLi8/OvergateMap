@@ -21,21 +21,144 @@
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/indoor_control/latest/indoor_control.js"></script>
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/marker_controller/latest/marker_controller.js"></script>
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/poi_api/latest/poi_api.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script src="plotly-latest.min.js"></script>
 
 </head>
 
 <body>
-<div style="position: relative">
-        <div id="widget-container" class="wrld-widget-container"></div>
-        <div id="map" style="height:1080px; margin:auto;">
-                <div id="myModal" class="modal">
-                    <div class="modal-content" id="modal-content">
-                        <span class="close">&times;</span>
-                    </div>
-                </div>
-        </div>
+	<div style="position: relative">
+		<div id="widget-container" class="wrld-widget-container"></div>
+		<div id="map" style="height:1080px; margin:auto;">
+			<div id="myModal" class="modal">
+				<div class="modal-content" id="modal-content">
+					<span class="close">&times;</span>
+					<ul class="nav nav-tabs  nav-justified">
+						<li class="active"><a data-toggle="tab" href="#stats">Stats</a></li>
+						<li><a data-toggle="tab" href="#vis">Visualisation</a></li>
+					</ul>
 
-        <script src="js/map.js"></script>
+					<!-- Stats -->
+					<div class="tab-content">
+						<div id="stats" class="tab-pane fade in active">
+							<h4 id="modalTitle"></h4>
+							<div class="container" id="modalStatsContainer">
+								
+								<div class="row">
+									<div class="col-md-6">
+										<div class="modal-image-cont">
+											<img id="modalImage" class="img-rounded" src="">
+										</div>
+									</div>
+
+									<div class="col-md-6" id="modalStats">
+										<div class="alert alert-info">
+										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Current Visitors: </p>
+										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Population Density: </p>
+										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Density Rating: </p>
+										<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Total Visitors: </p>
+									</div>
+									</div>
+									
+								</div>
+								<hr>
+								<div class="container">
+									<div class="descriptionTitle">
+										<h4>Shop Details</h4>
+									</div>
+								</div>
+							</div>
+							</div>
+
+
+							<!-- Visualisation -->
+							<div id="vis" class="tab-pane fade">
+								<h4>Live Population</h4>
+								<div id="graph"></div>
+								<script>
+									function rand() {
+										return Math.random();
+									}
+
+									var d3 = Plotly.d3;
+									var WIDTH_IN_PERCENT_OF_PARENT = 98,
+										HEIGHT_IN_PERCENT_OF_PARENT = 90;
+
+									var gd3 = d3.select("div[id='graph']")
+										.style({
+											width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+											'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+											height: HEIGHT_IN_PERCENT_OF_PARENT + '%'
+										});
+
+
+									var time = new Date();
+
+									var graph = gd3.node();
+
+									var data = [{
+										x: [time],
+										y: [rand],
+										fill: 'tozeroy',
+										mode: 'lines',
+										line: { color: '#80CAF6' }
+
+									}]
+
+									var layout = {
+										autosize: true,
+
+										margin: {
+											l: 50,
+											r: 50,
+											b: 100,
+											t: 10,
+											pad: 4
+										},
+
+									};
+
+									Plotly.plot('graph', data, layout, { displayModeBar: false });
+
+
+									var cnt = 0;
+
+									var interval = setInterval(function () {
+
+
+										var time = new Date();
+
+										var update = {
+											x: [[time]],
+											y: [[rand()]]
+										}
+
+										var olderTime = time.setMinutes(time.getMinutes() - 1);
+										var futureTime = time.setMinutes(time.getMinutes() + 1);
+
+										var minuteView = {
+											xaxis: {
+												type: 'date',
+												range: [olderTime, futureTime]
+											}
+										};
+
+										Plotly.relayout('graph', minuteView);
+										Plotly.extendTraces('graph', update, [0]);
+										window.onresize = function () { Plotly.Plots.resize(graph) };
+
+										if (cnt === 100) clearInterval(interval);
+									}, 1000);
+
+								</script>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<script src="js/map.js"></script>
 </body>
 
 </html>
