@@ -1,7 +1,3 @@
-<!DOCTYPE html>
-<html>
-<body>
-
 <?php
 
 
@@ -36,6 +32,3 @@ function connect(){
 }
 */
 ?>
-
-</body>
-</html> 
