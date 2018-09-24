@@ -16,9 +16,11 @@ Server: silva.computing.dundee.ac.uk
 
 Username: 18indteam5
 
-Password: 
+Password: 8433.it5.3348
 
 Database Name: 18indteam5db
+
+User must be on the computing VPN to access correctly.
 
 ==INSTALLATION==
 
