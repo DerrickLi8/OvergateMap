@@ -2,11 +2,13 @@
 
 ==CONTENTS==
 
-1:Database Details
+1: Database Details
 
-2:Installation
+2: Installation
 
-3:Uninstallation
+3: Uninstallation
+
+4: Documentation
 
 ==DATABASE DETAILS==
 
@@ -14,7 +16,7 @@ Server: silva.computing.dundee.ac.uk
 
 Username: 18indteam5
 
-Password:
+Password: 
 
 Database Name: 18indteam5db
 
@@ -25,3 +27,7 @@ Copy all files into a directory and open index.html in a web browser.  Navigate 
 ==UNINSTALLATION==
 
 Delete the files from your machine.
+
+==DOCUMENTATION==
+
+Refer to Report.pdf for documentation.
