@@ -12,6 +12,8 @@ var indoorControl = new WrldIndoorControl("widget-container", map);
 var markerController = new WrldMarkerController(map);
 var poiApi = new WrldPoiApi("91579bb03b94dbe153485fb8b1033e8d");
 
+const markerHeightAdjustment = -30;
+
 var allShopFloors = [];
 var currentFloor;
 var curSelectedMarker;
@@ -39,7 +41,7 @@ function movePopup(){
     var projection = map.latLngToLayerPoint(marker._latlng);
     markerController.selectMarker(marker);
     modal.style.display = "block";
-    modal.style.top = projection.y + "px";
+    modal.style.top = projection.y + markerHeightAdjustment + "px";
     modal.style.left = projection.x + "px";
 }
 
@@ -54,13 +56,10 @@ function displayMarkerPopUp(id, event) {
     }
 
     var title = curShopFloor.title;
-    var projection = map.latLngToLayerPoint(curMarker._latlng);
 
     curSelectedMarker = curMarker;
     markerController.selectMarker(curMarker);
-    modal.style.display = "block";
-    modal.style.top = projection.y + "px";
-    modal.style.left = projection.x + "px";
+    movePopup();
 }
 
 function onPOISearchResults(success, results) {
