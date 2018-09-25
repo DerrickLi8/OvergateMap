@@ -63,19 +63,34 @@
       <div id="vis" class="tab-pane fade">
 		 <div id="graph" ></div>
 		 <script>
+		 function getID(){
+			//function to get storeID from database based on store name
+			return $.ajax({
+				url: ' backend_functions.php',
+				type: 'POST',
+				data: { funct:'storesGetIDByName', name:"Debenhams", floor:0},
+				success: function(result){
+					alert(result)
+					return result;
+					}
+				});
+		 }
+		 
+		 var sID = getID();
+	     //function for getting the number of people in store
 		 function getNum()
 		 {
 			{
 			//funct for ajax call to backend
 			return $.ajax({
-				url: 'backend_functions.php',
+				url: ' backend_functions.php',
 				type: 'POST',
 				//needs a date included even if it`s not needed for the function
 // ! //			//recommended to push in the current date
 // ! //			//also needs the real store ID here
 				data: { storeID:1, funct:'storeTrackerForDay', date:"2018-09-13"},
-				success: function(result){
-					return result;
+				success: function(res){
+					return res;
 					}
 				});
 			}
