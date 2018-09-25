@@ -4,6 +4,7 @@ include 'backend.php';
 $storeID = $_POST['storeID'];
 $d = $_POST['date'];
 $funct = $_POST['funct'];
+$floor = $_POST['floor'];
 
 //calculate the people number at overgate per day
 function overgatePerDay($d){
@@ -58,6 +59,38 @@ function storeTrackerEnterRecord($inOrOut, $storeID){
     }
 }
 
+//function for calculating the people density of the given store
+//the result would only keep 2 digits after the decimal point and return as a String  
+function getPeopleDensityByStoreID($storeID){		
+	$getStore_array = array('StoreName', 'StoreID','PeopleNumber','Area');	
+	$store = getWithStoredProcedure("call storesSelectByID($storeID);", $getStore_array);		
+	$peopleDensity = $store['PeopleNumber'] / $store['Area'];	
+	$peopleDensity = number_format((float)$peopleDensity, 2, '.', '');				
+	return $peopleDensity;
+}
+
+//function for calculating the people density of the given floor
+//the result would only keep 2 digits after the decimal point and return as a String 
+function getPeopleDensityByFloor($floor){
+	$con = openConnection();
+	$query="call storesSelectByFloor($floor);"; 
+	$stmt = $con->prepare($query); 
+	$stmt->execute(); 
+	$result = $stmt->fetchAll(); 	
+	$peopleNumber = 0;
+	$totalArea = 0;
+	
+	foreach( $result as $row ) { 
+		$peopleNumber = $peopleNumber + $row['PeopleNumber'];
+		$totalArea = $totalArea + $row['Area'];
+	}		
+	closeConnection($result, $stmt, $con);
+	$peopleDensity = $peopleNumber / $totalArea;
+	$peopleDensity = number_format((float)$peopleDensity, 2, '.', '');		
+	return $peopleDensity;
+}
+
+
 //choose what function to call and what to return based on the data passed in
 
 switch($funct){
@@ -77,6 +110,13 @@ switch($funct){
     $result = storeTrackerTotal($storeID);
     break;    
 
+    case 'getPeopleDensityByStoreID':
+    $result = getPeopleDensityByStoreID($storeID);
+    break;
+
+    case 'getPeopleDenstiyByFloor':
+    $result = getPeopleDensityByFloor($floor);
+    break;
 }   
 
 $array = array('result'=>$result);
