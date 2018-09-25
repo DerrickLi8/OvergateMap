@@ -76,7 +76,7 @@ function onPOISearchResults(success, results) {
     for (i = 0; i < results.length; i++) {
         (function () {
             var markerOptions = {
-                isIndoor: true, iconKey: "toilet_men",
+                isIndoor: true, iconKey: "red-marker",
                 floorIndex: results[i].floor_id
             }; 
             var tempMarker = markerController.addMarker(i, [results[i].lat,
