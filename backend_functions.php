@@ -1,10 +1,7 @@
 <?php
 
 include 'backend.php';
-$storeID = $_POST['storeID'];
-$d = $_POST['date'];
 $funct = $_POST['funct'];
-$floor = $_POST['floor'];
 
 //calculate the people number at overgate per day
 function overgatePerDay($d){
@@ -38,10 +35,16 @@ function storeTrackerTotal($storeID){
     return $fin; 
 }
 
+//get storeID based on storeName
+function storesGetIDByName($storeName, $floor){
+    $r = getWithStoredProcedure("call storesGetIDByName('$storeName', $floor);", array("StoreID"));
+    return $r["StoreID"];
+}
+
 //enter record(overgate complex)
 function overgateComplexEnterRecord($inOrOut){
     try{
-        setWithStoredProcedure("call overgateComplexEnterRecord($inOrOut);");
+        setWithStoredProcedure("call overgateComplexEnterRecord($inOrOut);"); 
     }
     catch(PDOException $e)
     {
@@ -90,15 +93,17 @@ function getPeopleDensityByFloor($floor){
 	return $peopleDensity;
 }
 
-
 //choose what function to call and what to return based on the data passed in
 
 switch($funct){
     case 'storeTrackerForDay':
+    $d = $_POST['date'];
+    $storeID = $_POST['storeID'];
     $result = storeTrackerForDay($storeID, $d);
     break;
 
     case 'overgatePerDay':
+    $d = $_POST['date'];
     $result = overgatePerDay($d);
     break;
 
@@ -107,17 +112,26 @@ switch($funct){
     break;
 
     case 'storeTrackerTotal':
+    $storeID = $_POST['storeID'];
     $result = storeTrackerTotal($storeID);
-    break;    
+    break; 
+    
+    case 'storesGetIDByName':
+    $name = $_POST['name'];
+    $floor = $_POST['floor'];
+    $result = storesGetIDByName($name, $floor);
+    break;
 
     case 'getPeopleDensityByStoreID':
+    $storeID = $_POST['storeID'];
     $result = getPeopleDensityByStoreID($storeID);
     break;
 
     case 'getPeopleDenstiyByFloor':
+    $floor = $_POST['floor'];
     $result = getPeopleDensityByFloor($floor);
     break;
-}   
+}
 
 $array = array('result'=>$result);
 echo $array["result"];
