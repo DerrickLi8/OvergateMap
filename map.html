@@ -15,27 +15,160 @@
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/dist/latest/wrld.js"></script>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css" rel="stylesheet" />
 	<link href="https://cdn-webgl.wrld3d.com/wrldjs/addons/resources/latest/css/wrld.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 	<link href="css/custom.css" rel="stylesheet" />
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/indoor_control/latest/indoor_control.js"></script>
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/marker_controller/latest/marker_controller.js"></script>
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/poi_api/latest/poi_api.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+
+	<script src="plotly-latest.min.js"></script>
 
 </head>
 
 <body>
-<div style="position: relative">
-        <div id="widget-container" class="wrld-widget-container"></div>
-        <div id="map" style="height:1080px; margin:auto;">
-                <div id="myModal" class="modal">
-                    <div class="modal-content" id="modal-content">
-                        <span class="close">&times;</span>
-                    </div>
-                </div>
-        </div>
+	<div style="position: relative">
+		<div id="widget-container" class="wrld-widget-container"></div>
+		<div id="map" style="height:1080px; margin:auto;">
+			<div id="centreModal" class="centreModal bounceInDown delay-3s animated">
+				<div class="centreInnerContent" id="centreInnerContent">
+					<div class="centreTitle">
+						<h3>Overgate</h3>
+					</div>
+					<div class="centreDescContainer">
+						<p>Current Visitors:</p>
+						<p>Number of Shops:</p>
+						<p>Number of Floors:</p>
+						<p>Total Visitors:</p>
+						<canvas id="centreChart">
 
-        <script src="js/map.js"></script>
+						</canvas>
+						
+						<Script>
+							var ctx = document.getElementById("centreChart").getContext('2d');;
+							data = {
+								datasets: [{
+									data: [10, 20, 30],
+									backgroundColor: [
+									'rgba(255, 99, 132, 1)',
+									'rgba(26, 199, 25, 1)',
+									'rgba(255, 206, 86, 1)'
+								]
+								}],
+
+								// These labels appear in the legend and in the tooltips when hovering different arcs
+								labels: [
+									'Red',
+									'Green',
+									'Yellow'
+								]
+							};
+
+							var myDoughnutChart = new Chart(ctx, {
+								type: 'doughnut',
+								data: data,
+								options: {
+									legend: {
+										display: false
+									}
+								}
+							});
+
+						</script>
+					</div>
+
+				</div>
+				<div class="centreArrowCont">
+						<span id="centreModalIcon" onClick="toggleCentreModal()" class="glyphicon glyphicon-chevron-down"></span>
+					</div>
+			</div>
+			<div id="shopModal" class="shopModal">
+				<div class="shopModal-content" id="shopModal-content">
+					<span class="close">&times;</span>
+					<div class="modalLeftBG">
+						<div class="modalLeftIconContainer">
+							<img class="modalLeftIcon" src="https://cdn-webgl.wrld3d.com/wrld-search/latest/assets/js/icon1_toilet_men.png">
+						</div>
+					</div>
+					<div class="modalRight">
+						<div class="modalTitle">
+							<h3 class="modalTitleText" id="shopModalTitle">Title of Shop</h3>
+						</div>
+
+						<ul class="nav nav-tabs  nav-justified">
+							<li class="active"><a data-toggle="tab" href="#stats">Stats</a></li>
+							<li><a data-toggle="tab" href="#vis">Visualisation</a></li>
+						</ul>
+
+						<!-- Stats -->
+						<div class="tab-content">
+							<div id="stats" class="tab-pane fade in active">
+								<div class="container" id="modalStatsContainer">
+									<div class="row">
+
+									</div>
+
+									<div class="col-md-6">
+										<div class="modal-image-cont">
+											<img id="shopModalImage" class="img-rounded" src="">
+										</div>
+
+									</div>
+
+									<div class="col-md-6" id="modalStats">
+										<div class="alert alert-info">
+											<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Current Visitors: 10 </p>
+											<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Population Density: 20 </p>
+											<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Density Rating: Average </p>
+											<p class="greg"> <span class="glyphicon glyphicon-chevron-right"></span> Total Visitors: 30 </p>
+										</div>
+									</div>
+
+								</div>
+								<hr>
+								<div class="container">
+									<div class="descriptionTitle">
+										<h4>Shop Details</h4>
+									</div>
+									<div class="row" id="shopDescRow">
+										<div class="col-md-4 vbRight" id="shopDesc">
+											<h5>Description</h5>
+											<p>This is a shop in the overgate centre. It sells Items and these are for sale
+											</p>
+										</div>
+										<div class="col-md-4 vbRight" id="shopAddress">
+											<h5>Address</h5>
+											<p>101 Overgate centre</p>
+											<p>Dundee</p>
+											<p>City of Dundee</p>
+										</div>
+										<div class="col-md-4" id="shopOpeningTimes">
+											<h5>Opening Times</h5>
+											<p> Monday: 9-5pm Tuesday: 9-5pm Wednesday: 9-5pm Thursday: 9-5pm Friday: 9-5pm Saturday: 9-5pm Sunday: 9-5pm
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<!-- Visualisation -->
+							<div id="vis" class="tab-pane fade">
+								<h4>Live Population</h4>
+								<div id="graph"></div>
+								<script src="js/graph.js">
+								</script>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/map.js"></script>
 </body>
 
 </html>

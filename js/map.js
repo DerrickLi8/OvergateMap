@@ -1,5 +1,7 @@
 var span = document.getElementsByClassName("close")[0];
-var modal = document.getElementById("myModal");
+var modal = document.getElementById("shopModal");
+var centreModal = document.getElementById("centreModal");
+var centreModalIcon = document.getElementById("centreModalIcon");
 
 const indoorMapId = 'EIM-e16a94b1-f64f-41ed-a3c6-8397d9cfe607';
 var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
@@ -11,6 +13,8 @@ var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
 var indoorControl = new WrldIndoorControl("widget-container", map);
 var markerController = new WrldMarkerController(map);
 var poiApi = new WrldPoiApi("91579bb03b94dbe153485fb8b1033e8d");
+
+var centreModalUp=false;
 
 const markerHeightAdjustment = -30;
 
@@ -56,7 +60,8 @@ function displayMarkerPopUp(id, event) {
     }
 
     var title = curShopFloor.title;
-
+    document.getElementById("shopModalTitle").innerHTML = title;
+    document.getElementById("shopModalImage").src = curShopFloor.imageURL;
     curSelectedMarker = curMarker;
     markerController.selectMarker(curMarker);
     movePopup();
@@ -73,8 +78,7 @@ function onPOISearchResults(success, results) {
             var markerOptions = {
                 isIndoor: true, iconKey: "toilet_men",
                 floorIndex: results[i].floor_id
-            };
-
+            }; 
             var tempMarker = markerController.addMarker(i, [results[i].lat,
                     results[i].lon], markerOptions);
 
@@ -82,9 +86,9 @@ function onPOISearchResults(success, results) {
             tempMarker.on("click", function (e) {
                 displayMarkerPopUp(index, e);
             });
-
             var shopFloor = {
                 title: results[i].title,
+                imageURL: results[i].user_data.image_url,
                 marker: tempMarker,
                 occupancy: 0,
                 populationDensity: 0
@@ -101,9 +105,40 @@ function searchForAllMarkers() {
     poiApi.searchIndoors(indoorMapId, currentFloor, onPOISearchResults,
             poiSettings);
 }
+function openCentreModal(){
+    centreModal.style.display="block";
+    centreModal.classList.add("centreModal", "bounceInDown", "delay-3s", "animated");
+    centreModal.style.top = "0px";
+    centreModalIcon.classList.remove("glyphicon-chevron-down");
+    centreModalIcon.classList.add("glyphicon-chevron-up");
+}
+
+function closeCentreModal(){
+    centreModal.classList.remove("centreModal", "bounceInDown", "delay-3s", "animated");
+    centreModal.classList.add("centreModal", "bounceOutUp", "animated");
+    setTimeout(function(){
+        centreModal.classList.remove( "bounceOutUp", "delay-3s", "animated");
+        centreModal.style.top = "-35%";
+        centreModalIcon.classList.remove("glyphicon-chevron-up");
+        centreModalIcon.classList.add("glyphicon-chevron-down");
+    },
+    1000)
+}
+
+function toggleCentreModal(){
+    console.log(centreModalUp);
+    if(!centreModalUp){
+        closeCentreModal();
+        centreModalUp = true;
+    }else{
+        openCentreModal();
+        centreModalUp = false;
+    }
+}
 
 function onIndoorMapEntered(event) {
     "use strict";
+    openCentreModal();
     currentFloor = map.indoors.getFloor().getFloorIndex();
     searchForAllMarkers();
 }
