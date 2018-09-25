@@ -31,6 +31,7 @@ function storeTrackerForDay($storeID, $d){
 function storeTrackerTotal($storeID){
     $r = getWithStoredProcedure("call storeTrackerGetInTotal($storeID);", array("totalNumberIn"));
     $or = getWithStoredProcedure("call storeTrackerGetOutTotal($storeID);", array("totalNumberOut"));
+    return $or["totalNumberOut"];
     $fin = $r["totalNumberIn"] - $or["totalNumberOut"];
     return $fin; 
 }

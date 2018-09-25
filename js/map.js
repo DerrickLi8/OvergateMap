@@ -66,7 +66,10 @@ function displayMarkerPopUp(id, event) {
     markerController.selectMarker(curMarker);
     movePopup();
 }
-
+function setShopFloorDBID(id,index){
+    "use strict";
+    allShopFloors[index].dbID = id;
+}
 function onPOISearchResults(success, results) {
     "use strict";
     if (!success) {
@@ -86,14 +89,16 @@ function onPOISearchResults(success, results) {
             tempMarker.on("click", function (e) {
                 displayMarkerPopUp(index, e);
             });
+
             var shopFloor = {
                 title: results[i].title,
                 imageURL: results[i].user_data.image_url,
                 marker: tempMarker,
+                dbID: -1,
                 occupancy: 0,
                 populationDensity: 0
             };
-
+            getID(results[i].title,index);
             allShopFloors.push(shopFloor);
         }());
     }
