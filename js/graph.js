@@ -40,7 +40,7 @@ var layout = {
 
 };
 
-Plotly.plot('graph', data, layout, { displayModeBar: false });
+Plotly.plot('graph', data, layout, { displayModeBar: false,  showAxisDragHandles: false, showAxisRangeEntryBoxes: false, staticPlot:true });
 
 
 var cnt = 0;
