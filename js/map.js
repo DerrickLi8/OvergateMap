@@ -21,6 +21,9 @@ const markerHeightAdjustment = -30;
 var allShopFloors = [];
 var currentFloor;
 var curSelectedMarker;
+var interval;
+
+var dbInfo = [];
 
 function closeModalPopup() {
     "use strict";
@@ -35,12 +38,49 @@ span.onclick = function () {
     closeModalPopup();
 };
 
+function updateDisplay(){
+    console.log("here");
+    mapDbInfo();
+    if(curSelectedMarker){
+        console.log(curSelectedMarker);
+        updateMarkerPopUpText(curSelectedMarker.id);
+    }
+    
+}
+
+function requestDataFromDBFirst(){
+    "use strict";
+    return $.ajax({
+        url: 'backend_functions.php',
+        type: 'POST',
+        data: { funct:'getStoreTable'},
+        success: function(result){
+            dbInfo = JSON.parse(result);
+            searchForAllMarkers();
+         }
+        });
+}
+
+function requestDataFromDBUpdate(){
+    "use strict";
+    return $.ajax({
+        url: 'backend_functions.php',
+        type: 'POST',
+        data: { funct:'getStoreTable'},
+        success: function(result){
+            dbInfo = JSON.parse(result);
+            updateDisplay();
+         }
+        });
+}
+
 function movePopup(){
     "use strict";
-    var marker = curSelectedMarker;
-    if (!marker) {
+
+    if (!curSelectedMarker) {
         return;
     }
+    var marker = curSelectedMarker.curMarker;
 
     var projection = map.latLngToLayerPoint(marker._latlng);
     markerController.selectMarker(marker);
@@ -49,27 +89,58 @@ function movePopup(){
     modal.style.left = projection.x + "px";
 }
 
+function updateMarkerPopUpText(shopFloorID){
+    "use strict";
+    var curShopFloor = allShopFloors[shopFloorID];
+    document.getElementById("shopModalTitle").innerHTML = curShopFloor.title;
+    document.getElementById("shopModalImage").src = curShopFloor.imageURL;
+    document.getElementById("modalCurVisitors").innerHTML = curShopFloor.databaseInfo.storeName;
+    document.getElementById("modalPopDensity").innerHTML = curShopFloor.databaseInfo.storeName;
+    document.getElementById("modalPopDensityRating").innerHTML = curShopFloor.databaseInfo.storeName;
+    document.getElementById("modalTotalVisitors").innerHTML = curShopFloor.databaseInfo.storeName;
+}
 function displayMarkerPopUp(id, event) {
     "use strict";
     var curShopFloor = allShopFloors[id];
     var curMarker = curShopFloor.marker;
 
-    if (curSelectedMarker === curMarker) {
-        closeModalPopup();
-        return;
+    if(curSelectedMarker){
+        if(curSelectedMarker.curMarker){
+            if (curSelectedMarker.curMarker === curMarker) {
+                closeModalPopup();
+                return;
+            }
+        }
     }
 
-    var title = curShopFloor.title;
-    document.getElementById("shopModalTitle").innerHTML = title;
-    document.getElementById("shopModalImage").src = curShopFloor.imageURL;
-    curSelectedMarker = curMarker;
+    updateMarkerPopUpText(id);
+
+    curSelectedMarker = {curMarker: curMarker, id: id};
     markerController.selectMarker(curMarker);
     movePopup();
 }
+
+
 function setShopFloorDBID(id,index){
     "use strict";
     allShopFloors[index].dbID = id;
 }
+
+function mapDbInfo(){
+    "use strict";
+    var index = 0;
+    console.log("mapdbinfo");
+    dbInfo.forEach(function (element){
+        allShopFloors.forEach(function (element2){
+            if ((element2.title === element.storeName) && (element2.floor == element.storeFloor)){
+                element2.databaseInfo = element;
+            }
+        });
+    });
+}
+
+
+
 function onPOISearchResults(success, results) {
     "use strict";
     if (!success) {
@@ -92,16 +163,18 @@ function onPOISearchResults(success, results) {
 
             var shopFloor = {
                 title: results[i].title,
+                floor: results[i].floor_id,
                 imageURL: results[i].user_data.image_url,
                 marker: tempMarker,
-                dbID: -1,
-                occupancy: 0,
-                populationDensity: 0
+                databaseInfo: []
             };
-            getID(results[i].title,index);
             allShopFloors.push(shopFloor);
         }());
     }
+    mapDbInfo();
+    interval = setInterval(function(){
+        requestDataFromDBUpdate();
+    },5000);
 }
 
 function searchForAllMarkers() {
@@ -143,9 +216,10 @@ function toggleCentreModal(){
 
 function onIndoorMapEntered(event) {
     "use strict";
+    requestDataFromDBFirst();
     openCentreModal();
     currentFloor = map.indoors.getFloor().getFloorIndex();
-    searchForAllMarkers();
+    //searchForAllMarkers();
 }
 
 map.on('initialstreamingcomplete', () => {

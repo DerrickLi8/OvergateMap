@@ -94,6 +94,24 @@ function getPeopleDensityByFloor($floor){
 	return $peopleDensity;
 }
 
+function getStoreTable(){
+    $con = openConnection();
+	$query="select * from stores"; 
+	$stmt = $con->prepare($query); 
+	$stmt->execute(); 
+	$result = $stmt->fetchAll(); 	
+    $jsonArray = array();
+    foreach($result as $row){
+        $jsonData['storeID'] = $row['storeID'];
+        $jsonData['storeName'] = $row['storeName'];
+        $jsonData['storeArea'] = $row['storeArea'];
+        $jsonData['storeFloor'] = $row['storeFloor'];
+        array_push($jsonArray,$jsonData);
+    }
+	closeConnection($result, $stmt, $con);	
+	return json_encode($jsonArray);
+}
+
 //choose what function to call and what to return based on the data passed in
 
 switch($funct){
@@ -131,6 +149,10 @@ switch($funct){
     case 'getPeopleDenstiyByFloor':
     $floor = $_POST['floor'];
     $result = getPeopleDensityByFloor($floor);
+    break;
+
+    case 'getStoreTable':
+    $result = getStoreTable();
     break;
 }
 
