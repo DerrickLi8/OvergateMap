@@ -2,6 +2,8 @@ var span = document.getElementsByClassName("close")[0];
 var modal = document.getElementById("shopModal");
 var centreModal = document.getElementById("centreModal");
 var centreModalIcon = document.getElementById("centreModalIcon");
+var currentCentreChart;
+var graphInterval;
 
 const indoorMapId = 'EIM-e16a94b1-f64f-41ed-a3c6-8397d9cfe607';
 var map = L.Wrld.map("map", "91579bb03b94dbe153485fb8b1033e8d", {
@@ -93,8 +95,10 @@ function updateCentreModal(totalRatings, totalVisitors, totalCurVisitors) {
             'Average'
         ]
     };
-
-    var myDoughnutChart = new Chart(ctx, {
+    if(currentCentreChart){
+        currentCentreChart.destroy();
+    }
+     currentCentreChart = new Chart(ctx, {
         type: 'doughnut',
         data: data,
         options: {
@@ -122,6 +126,7 @@ function updateDisplay() {
     updateMarkers();
     if (curSelectedMarker) {
         updateMarkerPopUpText(curSelectedMarker.id);
+        updateShopGraph();
     }
 }
 
@@ -277,6 +282,7 @@ function openCentreModal() {
     centreModal.style.top = "0px";
     centreModalIcon.classList.remove("glyphicon-chevron-down");
     centreModalIcon.classList.add("glyphicon-chevron-up");
+    
 }
 
 function closeCentreModal() {
