@@ -1,7 +1,7 @@
 <?php
 
 include 'backend.php';
-$funct = $_POST['funct'];
+$funct = $_GET['funct'];
 
 //calculate the people number at overgate per day
 function overgatePerDay($d){
@@ -43,6 +43,20 @@ function storesGetIDByName($storeName, $floor){
 }
 
 //enter record(overgate complex)
+function storeTrackerCreate($inOrOut, $storeID){
+    $date = date("Y-m-d");
+    $time = date("H:i:s");
+    try{
+        setWithStoredProcedure("call storeTrackerCreate('$time', '$date', $inOrOut, $storeID);");
+        return("succcc");
+    }
+    catch(PDOException $e)
+    {
+        echo "error: ".$e->getMessage();
+    }
+}
+
+//enter record(overgate complex)
 function overgateComplexEnterRecord($inOrOut){
     try{
         setWithStoredProcedure("call overgateComplexEnterRecord($inOrOut);"); 
@@ -52,6 +66,7 @@ function overgateComplexEnterRecord($inOrOut){
         echo "error: ".$e->getMessage();
     }
 }
+
 //enter record(storeTracker)
 function storeTrackerEnterRecord($inOrOut, $storeID){
     try{
@@ -90,9 +105,10 @@ function getPeopleDensityByFloor($floor){
 	}		
 	closeConnection($result, $stmt, $con);
 	$peopleDensity = $peopleNumber / $totalArea;
-	$peopleDensity = number_format((float)$peopleDensity, 2, '.', '');		
+	$peopleDensity = number_format((float)$peopleDensity, 2, '.', '');	
 	return $peopleDensity;
 }
+
 
 function getStoreTable(){
     $con = openConnection();
@@ -114,6 +130,28 @@ function getStoreTable(){
     }
 	closeConnection($result, $stmt, $con);	
 	return json_encode($jsonArray);
+  
+//function to clear table (storeTracker)
+function storeTrackerClear(){
+    try{
+        setWithStoredProcedure("call storeTrackerClear();");
+    }
+    catch(PDOException $e)
+    {
+        echo "error: ".$e->getMessage();
+    }
+}
+
+//function to save history (storeTracker)
+function storeHistoryBatchUpdate(){
+    try{
+        setWithStoredProcedure("call storeHistoryBatchUpdate();");
+    }
+    catch(PDOException $e)
+    {
+        echo "error: ".$e->getMessage();
+    }
+
 }
 
 //choose what function to call and what to return based on the data passed in
@@ -160,6 +198,20 @@ switch($funct){
     break;
 }
 
+    case 'storeTrackerCreate':
+    $inOrOut = $_GET['inOrOut'];
+    $storeID = $_GET['storeID'];
+    $result = storeTrackerCreate($inOrOut, $storeID);
+    break;
+
+    case 'storeTrackerClear':
+    $result = storeTrackerClear();
+    break;
+
+    case 'storeHistoryBatchUpdate':
+    $result = storeHistoryBatchUpdate();
+    break;
+}
 $array = array('result'=>$result);
 echo $array["result"];
 ?>
