@@ -31,6 +31,7 @@ function closeModalPopup() {
     "use strict";
     markerController.deselectMarker();
     curSelectedMarker = null;
+    deleteShopGraph();
     modal.style.display = "none";
 }
 
@@ -44,7 +45,6 @@ function updateMarkers(){
     allShopFloors.forEach(function(curShopFloor){
         var options;
         var densityRating = curShopFloor.densityRating;
-        console.log(densityRating);
         if(densityRating === "Quiet"){
             options={iconKey:"green-marker"};
         }else if(densityRating === "Average"){
@@ -68,9 +68,6 @@ function calculateDensityRating(shopFloor) {
     return densityRating;
 }
 
-function onlyUnique(value, index, self) {
-    return self.indexOf(value.title) === index.title;
-}
 
 function updateCentreModal(totalRatings, totalVisitors, totalCurVisitors) {
     "use strict";
@@ -173,6 +170,8 @@ function movePopup() {
 
 function displayMarkerPopUp(id, event) {
     "use strict";
+    deleteShopGraph();
+    $('.nav-tabs a:first').tab('show');
     var curShopFloor = allShopFloors[id];
     var curMarker = curShopFloor.marker;
 
@@ -188,6 +187,7 @@ function displayMarkerPopUp(id, event) {
     updateMarkerPopUpText(id);
     curSelectedMarker = { curMarker: curMarker, id: id };
     markerController.selectMarker(curMarker);
+    createShopGraph();
     movePopup();
 }
 
@@ -209,7 +209,6 @@ function mapDbInfo() {
 
     var totalVisitors = 0;
     var totalCurVisitors = 0;
-    console.log("mapdbinfo");
     dbInfo.forEach(function (element) {
         allShopFloors.forEach(function (element2) {
             if ((element2.title === element.storeName) && (element2.floor == element.storeFloor)) {
@@ -219,13 +218,9 @@ function mapDbInfo() {
                 totalRatings[curRating] = totalRatings[curRating] + 1;
                 totalVisitors += parseInt(element.storeTotPopulation);
                 totalCurVisitors += parseInt(element.storeCurPopulation);
-                console.log(element2.title + " " + element.storeName);
             }
         });
     });
-    console.log(index);
-    console.log(allShopFloors);
-    console.log(totalRatings);
     updateCentreModal(totalRatings, totalVisitors, totalCurVisitors);
 }
 
@@ -233,7 +228,6 @@ function mapDbInfo() {
 
 function onPOISearchResults(success, results) {
     "use strict";
-    console.log(results);
     if (!success) {
         return;
     }
@@ -298,7 +292,6 @@ function closeCentreModal() {
 }
 
 function toggleCentreModal() {
-    console.log(centreModalUp);
     if (!centreModalUp) {
         closeCentreModal();
         centreModalUp = true;
@@ -322,3 +315,10 @@ map.indoors.on("indoormapenter", onIndoorMapEntered);
 map.indoors.on("indoormapfloorchange", closeModalPopup);
 map.on("pan", movePopup);
 map.on("zoom", movePopup);
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href") // activated tab
+    if(target == '#vis'){
+        updateShopGraph();
+    }
+  });
