@@ -148,6 +148,35 @@ function storeHistoryBatchUpdate(){
 }
 
 
+function getStoreTable(){
+    $con = openConnection();
+	$query="select * from stores"; 
+	$stmt = $con->prepare($query); 
+	$stmt->execute(); 
+	$result = $stmt->fetchAll(); 	
+    $jsonArray = array();
+    foreach($result as $row){
+        $jsonData['storeID'] = $row['StoreID'];
+        $jsonData['storeName'] = $row['StoreName'];
+        $jsonData['storeArea'] = $row['Area'];
+        $jsonData['storeFloor'] = $row['UpDown'];
+        $jsonData['storeCurPopulation'] = $row['CurrentPopulation'];
+        $jsonData['storeTotPopulation'] = $row['TotalPopulation'];
+        $jsonData['storePopulationDensity'] = $row['PopulationDensity'];
+
+        array_push($jsonArray,$jsonData);
+    }
+	closeConnection($result, $stmt, $con);	
+	return json_encode($jsonArray);
+}
+
+function getStoreHistory($storeID, $d){
+    $r = getWithStoredProcedure("call getStoreHistory($storeID, '$d');", array("TotalPeopleIn"));
+    return $r;
+}
+
+
+
 
 /*
 --------------tests here------------------
@@ -165,11 +194,7 @@ function storeHistoryBatchUpdate(){
 //var_dump($t);
 //echo "<br>";
 
-//test for storeTrackerForDay
-$t = storeTrackerForDay(1, "2018-09-13");
-echo "test(storeTrackerForDay)";
-var_dump($t);
-echo "<br>";
+
 
 //test for storeTrackerTotal
 //$t = storeTrackerTotal(2);
@@ -187,16 +212,24 @@ echo "<br>";
 //echo "<br>";
 
 //test for getting the ID
-$t = storeTrackerClear();
-echo "test(storesTrackerClear)";
-var_dump($t);
-echo "<br>";
+//$t = storeTrackerClear();
+//echo "test(storesTrackerClear)";
+//var_dump($t);
+//echo "<br>";
 
 //test storeTrackerClear
 //$t = storeHistoryBatchUpdate();
 //echo "test(storeHistoryBatchUpdate)";
 //var_dump($t);
 //echo "<br>";
+
+//getStoreTable test
+$t = getStoreHistory(1, "2018-09-27");
+echo "test(getStoreHistory)";
+$array = array('result'=>$t);
+var_dump( json_encode($array));
+//var_dump($array);
+echo "<br>";
 
 
 
