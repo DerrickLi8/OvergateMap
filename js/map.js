@@ -100,7 +100,11 @@ function updateCentreModal(totalRatings, totalVisitors, totalCurVisitors) {
         data: data,
         options: {
             legend: {
-                display: false
+                display: true,
+                position:"top",
+                labels: {
+                    fontColor: 'rgb(255, 255, 255)'
+                }
             }
         }
     });
