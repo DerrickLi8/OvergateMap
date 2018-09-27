@@ -104,8 +104,30 @@ function getPeopleDensityByFloor($floor){
 	}		
 	closeConnection($result, $stmt, $con);
 	$peopleDensity = $peopleNumber / $totalArea;
-	$peopleDensity = number_format((float)$peopleDensity, 2, '.', '');		
+	$peopleDensity = number_format((float)$peopleDensity, 2, '.', '');	
 	return $peopleDensity;
+}
+
+//function to clear table (storeTracker)
+function storeTrackerClear(){
+    try{
+        setWithStoredProcedure("call storeTrackerClear();");
+    }
+    catch(PDOException $e)
+    {
+        echo "error: ".$e->getMessage();
+    }
+}
+
+//function to save history (storeTracker)
+function storeHistoryBatchUpdate(){
+    try{
+        setWithStoredProcedure("call storeHistoryBatchUpdate();");
+    }
+    catch(PDOException $e)
+    {
+        echo "error: ".$e->getMessage();
+    }
 }
 
 //choose what function to call and what to return based on the data passed in
@@ -151,6 +173,14 @@ switch($funct){
     $inOrOut = $_GET['inOrOut'];
     $storeID = $_GET['storeID'];
     $result = storeTrackerCreate($inOrOut, $storeID);
+    break;
+
+    case 'storeTrackerClear':
+    $result = storeTrackerClear();
+    break;
+
+    case 'storeHistoryBatchUpdate':
+    $result = storeHistoryBatchUpdate();
     break;
 }
 $array = array('result'=>$result);
