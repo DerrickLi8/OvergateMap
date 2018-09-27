@@ -126,7 +126,10 @@ function updateDisplay() {
         updateShopGraph();
     }
 }
-
+function updateMarkerPopUpShopDescription(id){
+    var curShopFloor = allShopFloors[id];
+    document.getElementById("shopDesc").innerHTML = "<h5>Description</h5>" + curShopFloor.description;
+}
 function requestDataFromDBFirst() {
     "use strict";
     return $.ajax({
@@ -183,7 +186,7 @@ function displayMarkerPopUp(id, event) {
             }
         }
     }
-
+    updateMarkerPopUpShopDescription(id);
     updateMarkerPopUpText(id);
     curSelectedMarker = { curMarker: curMarker, id: id };
     markerController.selectMarker(curMarker);
@@ -249,6 +252,7 @@ function onPOISearchResults(success, results) {
             var shopFloor = {
                 title: results[i].title,
                 floor: results[i].floor_id,
+                description: results[i].user_data.description,
                 imageURL: results[i].user_data.image_url,
                 marker: tempMarker,
                 densityRating: "",
