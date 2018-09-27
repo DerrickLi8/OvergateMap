@@ -35,7 +35,6 @@ function setWithStoredProcedure($proc){
         $con = openConnection();
         $stmt = $con->prepare($proc);
         $stmt->execute();
-        echo "success";
         closeConnectionForSet($stmt, $con);
         }
     catch(PDOException $e)
@@ -44,21 +43,21 @@ function setWithStoredProcedure($proc){
         }
 }
 
-function getWithStoredProcedure($proc, $input){
+function getWithStoredProcedure($proc, $array){
     try{
         $con = openConnection();
-        $stmt = $con->prepare($proc, array(':input'));
-        $stmt->bindParam(':input', $input, PDO::PARAM_STR);
+        $stmt = $con->prepare($proc, $array);
         $stmt->execute();
         $r = $stmt->fetchAll();
         $to_return = array();
         foreach($r as $res){
             //var_dump($res);
-                if(array_key_exists($input, $res)){
+            foreach($array as $key){
+                if(array_key_exists($key, $res)){
                     $to_return[$key] = $res[$key];
                 }
             }
-        
+        }
         return $to_return;
     closeConnection($r, $stmt, $con);
     }
@@ -127,19 +126,28 @@ function storesGetIDByName($storeName, $floor){
 }  
 
 
-//enter record(overgate complex)
-function storeTrackerCreate($inOrOut, $storeID){
-    $date = date("Y-m-d");
-    $time = date("H:i:s");
+//clear tables
+function storeTrackerClear(){
     try{
-        setWithStoredProcedure("call storeTrackerCreate('$time', '$date', $inOrOut, $storeID);");
-        return("succcc");
+        setWithStoredProcedure("call storeTrackerClear();");
     }
     catch(PDOException $e)
     {
         echo "error: ".$e->getMessage();
     }
 }
+
+function storeHistoryBatchUpdate(){
+    try{
+        setWithStoredProcedure("call storeHistoryBatchUpdate();");
+    }
+    catch(PDOException $e)
+    {
+        echo "error: ".$e->getMessage();
+    }
+}
+
+
 
 /*
 --------------tests here------------------
@@ -158,10 +166,10 @@ function storeTrackerCreate($inOrOut, $storeID){
 //echo "<br>";
 
 //test for storeTrackerForDay
-//$t = storeTrackerForDay(1, "2018-09-13");
-//echo "test(storeTrackerForDay)";
-//var_dump($t);
-//echo "<br>";
+$t = storeTrackerForDay(1, "2018-09-13");
+echo "test(storeTrackerForDay)";
+var_dump($t);
+echo "<br>";
 
 //test for storeTrackerTotal
 //$t = storeTrackerTotal(2);
@@ -179,10 +187,16 @@ function storeTrackerCreate($inOrOut, $storeID){
 //echo "<br>";
 
 //test for getting the ID
-$t = storeTrackerCreate(0, 1);
-echo "test(storesTrackerCreate)";
+$t = storeTrackerClear();
+echo "test(storesTrackerClear)";
 var_dump($t);
 echo "<br>";
+
+//test storeTrackerClear
+//$t = storeHistoryBatchUpdate();
+//echo "test(storeHistoryBatchUpdate)";
+//var_dump($t);
+//echo "<br>";
 
 
 
