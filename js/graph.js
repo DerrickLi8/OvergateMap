@@ -1,7 +1,3 @@
-function rand() {
-    return Math.random();
-}
-
 var d3 = Plotly.d3;
 var WIDTH_IN_PERCENT_OF_PARENT = 98,
     HEIGHT_IN_PERCENT_OF_PARENT = 80;
@@ -13,46 +9,57 @@ var gd3 = d3.select("div[id='graph']")
         height: HEIGHT_IN_PERCENT_OF_PARENT + '%'
     });
 
-
-var time = new Date();
-
-var graph = gd3.node();
-
-var data = [{
-    x: [time],
-    y: [rand],
-    fill: 'tozeroy',
-    mode: 'lines',
-    line: { color: '#80CAF6' }
-
-}]
-
-var layout = {
-    autosize: true,
-
-    margin: {
-        l: 50,
-        r: 50,
-        b: 100,
-        t: 10,
-        pad: 4
-    },
-
-};
-
-Plotly.plot('graph', data, layout, { displayModeBar: false });
-
-
-var cnt = 0;
-
-var interval = setInterval(function () {
-
-
+function createShopGraph(){
+    var yValue = 0;
+    if(curSelectedMarker){
+        yValue = allShopFloors[curSelectedMarker.id].databaseInfo.storeCurPopulation;
+        console.log(yValue)
+    }
     var time = new Date();
+
+    var graph = gd3.node();
+
+    var data = [{
+        x: [time],
+        y: [yValue],
+        mode: 'lines',
+        line: { color: '#80CAF6' }
+
+    }]
 
     var update = {
         x: [[time]],
-        y: [[rand()]]
+        y: [[yValue]]
+    }
+
+    var layout = {
+        autosize: true,
+
+        margin: {
+            l: 50,
+            r: 50,
+            b: 100,
+            t: 10,
+            pad: 4
+        },
+
+    };
+
+    Plotly.plot('graph', data, layout, { displayModeBar: false, staticPlot: true });
+}
+
+
+
+function updateShopGraph() {
+    console.log("update");
+    if(!curSelectedMarker){
+        return;
+    }
+    var time = new Date();
+    var curPopulation = allShopFloors[curSelectedMarker.id].databaseInfo.storeCurPopulation;
+    var update = {
+        x: [[time]],
+        y: [[curPopulation]]
     }
 
     var olderTime = time.setMinutes(time.getMinutes() - 1);
@@ -69,5 +76,11 @@ var interval = setInterval(function () {
     Plotly.extendTraces('graph', update, [0]);
     window.onresize = function () { Plotly.Plots.resize(graph) };
 
-    if (cnt === 100) clearInterval(interval);
-}, 1000);
+}
+
+function deleteShopGraph(){
+    Plotly.purge('graph');
+}
+
+
+

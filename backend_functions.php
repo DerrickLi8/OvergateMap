@@ -31,6 +31,7 @@ function storeTrackerForDay($storeID, $d){
 function storeTrackerTotal($storeID){
     $r = getWithStoredProcedure("call storeTrackerGetInTotal($storeID);", array("totalNumberIn"));
     $or = getWithStoredProcedure("call storeTrackerGetOutTotal($storeID);", array("totalNumberOut"));
+    return $or["totalNumberOut"];
     $fin = $r["totalNumberIn"] - $or["totalNumberOut"];
     return $fin; 
 }
@@ -108,6 +109,28 @@ function getPeopleDensityByFloor($floor){
 	return $peopleDensity;
 }
 
+
+function getStoreTable(){
+    $con = openConnection();
+	$query="select * from stores"; 
+	$stmt = $con->prepare($query); 
+	$stmt->execute(); 
+	$result = $stmt->fetchAll(); 	
+    $jsonArray = array();
+    foreach($result as $row){
+        $jsonData['storeID'] = $row['StoreID'];
+        $jsonData['storeName'] = $row['StoreName'];
+        $jsonData['storeArea'] = $row['Area'];
+        $jsonData['storeFloor'] = $row['UpDown'];
+        $jsonData['storeCurPopulation'] = $row['CurrentPopulation'];
+        $jsonData['storeTotPopulation'] = $row['TotalPopulation'];
+        $jsonData['storePopulationDensity'] = $row['PopulationDensity'];
+
+        array_push($jsonArray,$jsonData);
+    }
+	closeConnection($result, $stmt, $con);	
+	return json_encode($jsonArray);
+  
 //function to clear table (storeTracker)
 function storeTrackerClear(){
     try{
@@ -128,6 +151,7 @@ function storeHistoryBatchUpdate(){
     {
         echo "error: ".$e->getMessage();
     }
+
 }
 
 //choose what function to call and what to return based on the data passed in
@@ -168,6 +192,11 @@ switch($funct){
     $floor = $_POST['floor'];
     $result = getPeopleDensityByFloor($floor);
     break;
+
+    case 'getStoreTable':
+    $result = getStoreTable();
+    break;
+}
 
     case 'storeTrackerCreate':
     $inOrOut = $_GET['inOrOut'];
