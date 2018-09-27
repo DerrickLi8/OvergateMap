@@ -102,10 +102,14 @@ function getStoreTable(){
 	$result = $stmt->fetchAll(); 	
     $jsonArray = array();
     foreach($result as $row){
-        $jsonData['storeID'] = $row['storeID'];
-        $jsonData['storeName'] = $row['storeName'];
-        $jsonData['storeArea'] = $row['storeArea'];
-        $jsonData['storeFloor'] = $row['storeFloor'];
+        $jsonData['storeID'] = $row['StoreID'];
+        $jsonData['storeName'] = $row['StoreName'];
+        $jsonData['storeArea'] = $row['Area'];
+        $jsonData['storeFloor'] = $row['UpDown'];
+        $jsonData['storeCurPopulation'] = $row['CurrentPopulation'];
+        $jsonData['storeTotPopulation'] = $row['TotalPopulation'];
+        $jsonData['storePopulationDensity'] = $row['PopulationDensity'];
+
         array_push($jsonArray,$jsonData);
     }
 	closeConnection($result, $stmt, $con);	

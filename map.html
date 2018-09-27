@@ -20,7 +20,7 @@
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/indoor_control/latest/indoor_control.js"></script>
-	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/marker_controller/latest/marker_controller.js"></script>
+	<script src="js/wrld_marker_controller.js"></script>
 	<script src="https://cdn-webgl.wrld3d.com/wrldjs/addons/poi_api/latest/poi_api.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
@@ -39,45 +39,14 @@
 						<h3>Overgate</h3>
 					</div>
 					<div class="centreDescContainer">
-						<p>Current Visitors:</p>
-						<p>Number of Shops:</p>
-						<p>Number of Floors:</p>
-						<p>Total Visitors:</p>
+						<p id="centreCurVisitors">Current Visitors:</p>
+						<p id="centreShopNumbers">Number of Shops:</p>
+						<p id="centreFloorNumbers">Number of Floors:</p>
+						<p id="centreTotalVisitors">Total Visitors:</p>
 						<canvas id="centreChart">
 
 						</canvas>
-						
-						<Script>
-							var ctx = document.getElementById("centreChart").getContext('2d');;
-							data = {
-								datasets: [{
-									data: [10, 20, 30],
-									backgroundColor: [
-									'rgba(255, 99, 132, 1)',
-									'rgba(26, 199, 25, 1)',
-									'rgba(255, 206, 86, 1)'
-								]
-								}],
-
-								// These labels appear in the legend and in the tooltips when hovering different arcs
-								labels: [
-									'Red',
-									'Green',
-									'Yellow'
-								]
-							};
-
-							var myDoughnutChart = new Chart(ctx, {
-								type: 'doughnut',
-								data: data,
-								options: {
-									legend: {
-										display: false
-									}
-								}
-							});
-
-						</script>
+					
 					</div>
 
 				</div>
@@ -147,7 +116,7 @@
 										</div>
 										<div class="col-md-4" id="shopOpeningTimes">
 											<h5>Opening Times</h5>
-											<p> Monday: 9-5pm Tuesday: 9-5pm Wednesday: 9-5pm Thursday: 9-5pm Friday: 9-5pm Saturday: 9-5pm Sunday: 9-5pm
+											<p> M: 9-5pm T: 9-5pm W: 9-5pm Th: 9-5pm F: 9-5pm Sa: 9-5pm Su: 9-5pm
 											</p>
 										</div>
 									</div>

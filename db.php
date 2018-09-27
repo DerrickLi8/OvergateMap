@@ -2,13 +2,12 @@
 
 
 function connect(){
-    $servername = "localhost";
-    $username = "root";
-    $password = "rootpass";
-    $dbname = "shoppingcentre";
-    $port ="3307";
+    $servername = "silva.computing.dundee.ac.uk";
+    $username = "18indteam5";
+    $password = "8433.it5.3348";
+    $dbname = "18indteam5db";
     try{
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname; port=$port", $username, $password);
+        $conn = new PDO("mysql:host=$servername;dbname=$dbname;", $username, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $conn;
     }

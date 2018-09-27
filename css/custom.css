@@ -25,10 +25,9 @@
     position: relative;
     bottom: 0;
     background-color:rgba(102, 130, 230, 0.86);
-    padding-left: 3px;
-    padding-right:2px;
     border-radius: 50%;
     padding:2px;
+    padding-left: 3px;
 }
 
 .glyphicon-chevron-down:hover {
@@ -43,11 +42,10 @@
     font-size: 25px;
     position: relative;
     bottom: 0;
-    background-color:rgba(102, 130, 230, 0.86);
-    padding-left: 3px;
-    padding-right:2px;
+    background-color:rgba(102, 130, 230, 0.95);
     border-radius: 50%;
     padding:2px;
+    padding-left: 3px;
 }
 
 .centreModal {
@@ -59,7 +57,7 @@
     overflow: hidden; /* Enable scroll if needed */
     width:15%;
     height:37%;
-    background-color:rgba(57, 93, 228, 0.86);
+    background-color:rgba(57, 93, 228, 0.95);
     color:white;
     border-radius: 10px;
     overflow:visible;
