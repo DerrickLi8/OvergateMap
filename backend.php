@@ -31,7 +31,6 @@ function setWithStoredProcedure($proc){
         $con = openConnection();
         $stmt = $con->prepare($proc);
         $stmt->execute();
-        echo "success";
         closeConnectionForSet($stmt, $con);
         }
     catch(PDOException $e)

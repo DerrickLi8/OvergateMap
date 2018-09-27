@@ -6,6 +6,8 @@
 #import modules to send requests
 import requests
 import random
+from datetime import time, date
+import json
 
 
 #class for sensors
@@ -19,11 +21,11 @@ class Sensor:
 
     #function to call when sensor is triggered
     #sends reqest to php backend to add person to database or remove person from database
-    def trigger(inOut, functName, storeID):
+    def trigger(self, inOut, storeID):
         try:
-            data = { funct: functName, storeID: storeID, floor: floorNum, inOrOut: inOut }
-            r = requests.get('https://zeno.computing.dundee.ac.uk/2018-projects/team5/backend_functions.php', params = data) #auth here if needed
-            print(r)
+            data = { "funct":"storeTrackerCreate", "storeID": storeID, "inOrOut": inOut }
+            r = requests.post('https://zeno.computing.dundee.ac.uk/2018-projects/team5/backend_functions.php', params=data)
+            print(r.url)
         except Exception as e:
             print(e)
 
@@ -31,27 +33,38 @@ class Sensor:
 #class for stores
 class Store:
     def __init__(self, storeID):
-        inSensor = Sensor(storeID, 1)
-        outSensor = Sensor(storeID, 0)
+        self.storeID = storeID
+        self.inSensor = Sensor(storeID, 1)
+        self.outSensor = Sensor(storeID, 0)
+        self.counter = 0
 
 
 
 #building overgate (stores+sensors)
 arr = []
-for each in range(62):
-    store = Store(each)
-    arr.append(store)
+for each in range(68):
+    arr.append(Store(each))
+    print(arr[each].storeID, "baszod")
 
     
 #simulating real-time events with randomized input on sensors in an infinite loop
 def loop():
-    number = random.randint(3, 50)
-        for each in range(number):
-            iO = random.randint(0,1)
-            if (iO==0):
-                arr[each].outSensor.trigger(iO, "storeTrackerEnterRecord", arr[each].storeID)
-            else:
-                arr[each].inSensor.trigger(iO, "storeTrackerEnterRecord", arr[each].storeID)
+    print("loop started")
+    number = random.randint(3, 60)
+    for each in range(number):
+        iO = random.randint(0,1)
+        print(iO)
+        if (iO == 0):
+            print("wut")
+            if(arr[each].counter >1):
+                print("storeID: ", arr[each].storeID)
+                arr[each].outSensor.trigger(iO, arr[each].storeID)
+                arr[each].counter -= 1
+        elif (iO == 1):
+            print("what")
+            a = arr[each].storeID
+            arr[each].inSensor.trigger(iO, arr[each].storeID)
+            arr[each].counter += 1
 
 while(True):
     try:
