@@ -116,6 +116,11 @@ function getStoreTable(){
 	return json_encode($jsonArray);
 }
 
+function getStoreHistory($storeID, $d){
+    $r = getWithStoredProcedure("call getStoreHistory($storeID, '$d');", array("TotalPeopleIn"));
+    return $r;
+}
+
 //choose what function to call and what to return based on the data passed in
 
 switch($funct){
@@ -158,8 +163,15 @@ switch($funct){
     case 'getStoreTable':
     $result = getStoreTable();
     break;
+
+    case 'getStoreHistory':
+    $d = $_POST['date'];
+    $storeID = $_POST['storeID'];
+    $result = getStoreHistory($storeID, $d);
+    break;
 }
 
 $array = array('result'=>$result);
-echo $array["result"];
+return json_encode($array);
+//echo $array["result"];
 ?>
