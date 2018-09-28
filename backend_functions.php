@@ -172,6 +172,5 @@ switch($funct){
 }
 
 $array = array('result'=>$result);
-return json_encode($array);
-//echo $array["result"];
+echo $array["result"];
 ?>
