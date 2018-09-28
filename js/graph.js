@@ -9,9 +9,9 @@ var gd3 = d3.select("div[id='graph']")
         height: HEIGHT_IN_PERCENT_OF_PARENT + '%'
     });
 
-function createShopGraph(){
+function createShopGraph() {
     var yValue = 0;
-    if(curSelectedMarker){
+    if (curSelectedMarker) {
         yValue = allShopFloors[curSelectedMarker.id].databaseInfo.storeCurPopulation;
         console.log(yValue)
     }
@@ -34,7 +34,6 @@ function createShopGraph(){
 
     var layout = {
         autosize: true,
-
         margin: {
             l: 50,
             r: 50,
@@ -42,7 +41,9 @@ function createShopGraph(){
             t: 10,
             pad: 4
         },
-
+        yaxis: {
+            'tickformat': ',d'
+        },
     };
 
     Plotly.plot('graph', data, layout, { displayModeBar: false, staticPlot: true });
@@ -52,7 +53,7 @@ function createShopGraph(){
 
 function updateShopGraph() {
     console.log("update");
-    if(!curSelectedMarker){
+    if (!curSelectedMarker) {
         return;
     }
     var time = new Date();
@@ -78,7 +79,7 @@ function updateShopGraph() {
 
 }
 
-function deleteShopGraph(){
+function deleteShopGraph() {
     Plotly.purge('graph');
 }
 

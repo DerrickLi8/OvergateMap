@@ -57,12 +57,17 @@ function updateMarkers(){
 }
 function calculateDensityRating(shopFloor) {
     var density = shopFloor.databaseInfo.storePopulationDensity;
-    var densityRating = 0;
+    var densityRating = "";
+
     if (density <= 5.68) {
         densityRating = "Busy";
     } else if (density <= 9.95) {
         densityRating = "Average";
     } else {
+        densityRating = "Quiet";
+    }
+
+    if(density <= 0){
         densityRating = "Quiet";
     }
     return densityRating;
@@ -72,9 +77,9 @@ function calculateDensityRating(shopFloor) {
 function updateCentreModal(totalRatings, totalVisitors, totalCurVisitors) {
     "use strict";
     document.getElementById("centreCurVisitors").innerHTML = "Current Visitors: " + totalCurVisitors;
-    document.getElementById("centreShopNumbers").innerHTML = "Number of Shops: " + 0;
+    document.getElementById("centreShopNumbers").innerHTML = "Number of Shops: " + 68;
     document.getElementById("centreFloorNumbers").innerHTML = "Number of Floors: " + map.indoors.getActiveIndoorMap().getFloorCount();
-    document.getElementById("centreTotalVisitors").innerHTML = "Total Visitors: " + totalVisitors;
+    document.getElementById("centreTotalVisitors").innerHTML = "Total Visitors Today: " + totalVisitors;
     var ctx = document.getElementById("centreChart").getContext('2d');
     var data = {
         datasets: [{
@@ -292,7 +297,7 @@ function closeCentreModal() {
     centreModal.classList.add("centreModal", "bounceOutUp", "animated");
     setTimeout(function () {
         centreModal.classList.remove("bounceOutUp", "delay-3s", "animated");
-        centreModal.style.top = "-35%";
+        centreModal.style.top = "-39%";
         centreModalIcon.classList.remove("glyphicon-chevron-up");
         centreModalIcon.classList.add("glyphicon-chevron-down");
     },
