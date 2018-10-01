@@ -24,7 +24,7 @@ class Sensor:
     def trigger(self, inOut, storeID):
         try:
             data = { "funct":"storeTrackerCreate", "storeID": storeID, "inOrOut": inOut }
-            r = requests.post('https://zeno.computing.dundee.ac.uk/2018-projects/team5/backend_functions.php', params=data)
+            r = requests.post('https://zeno.computing.dundee.ac.uk/2018-projects/team5/script_backend.php', params=data)
             print(r.url)
         except Exception as e:
             print(e)
@@ -44,7 +44,6 @@ class Store:
 arr = []
 for each in range(68):
     arr.append(Store(each))
-    print(arr[each].storeID, "baszod")
 
     
 #simulating real-time events with randomized input on sensors in an infinite loop
@@ -55,13 +54,10 @@ def loop():
         iO = random.randint(0,1)
         print(iO)
         if (iO == 0):
-            print("wut")
             if(arr[each].counter >1):
-                print("storeID: ", arr[each].storeID)
                 arr[each].outSensor.trigger(iO, arr[each].storeID)
                 arr[each].counter -= 1
         elif (iO == 1):
-            print("what")
             a = arr[each].storeID
             arr[each].inSensor.trigger(iO, arr[each].storeID)
             arr[each].counter += 1
