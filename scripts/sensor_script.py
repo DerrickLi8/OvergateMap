@@ -24,7 +24,7 @@ class Sensor:
     def trigger(self, inOut, storeID):
         try:
             data = { "funct":"storeTrackerCreate", "storeID": storeID, "inOrOut": inOut }
-            r = requests.post('https://zeno.computing.dundee.ac.uk/2018-projects/team5/script_backend.php', params=data)
+            r = requests.post('https://zeno.computing.dundee.ac.uk/2018-projects/team5/scripts/script_backend.php', params=data)
             print(r.url)
         except Exception as e:
             print(e)
